@@ -1,0 +1,17 @@
+name: signalp6
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - numpy
+  - biopython
+  - pytorch
+  - torchvision
+  - torchaudio
+  - rdkit
+  - hmmer
+  - pip:
+    - signalp==6.0

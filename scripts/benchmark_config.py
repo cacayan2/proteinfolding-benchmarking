@@ -11,6 +11,13 @@ print(f"[CONFIG] Project Root: {PROJECT_ROOT}")
 
 # Data Directories
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
+PDB_LIST = ["1HVR", "1OHR", "3QS1", "2R5P", "1STP",
+            "2VTA", "1BTH", "1PPH",
+            "3HTB", "1CA3", "4M0C",
+            "1A30", "2HYY", "3E92",
+            "1B9V", "1FPU", "1CKA", "1SSH",
+            "2BR1", "3L3P", "1DHF"]
+DATA_ENV = "download_dataset"
 print(f"[CONFIG] Data Directory: {DATA_DIR}")
 
 # Results Directories
@@ -32,7 +39,7 @@ print(f"[CONFIG] Plots Directory: {PLOTS_DIR}")
 TOOLS_DIR = os.path.join(PROJECT_ROOT, "tools")
 print(f"[CONFIG] Tools Directory: {TOOLS_DIR}")
 
-# ProteinGenerator
+## ProteinGenerator
 PG_DIR = os.path.join(TOOLS_DIR, "ProteinGenerator")
 PG_ENV = "proteingenerator"
 PG_INFERENCE = os.path.join(TOOLS_DIR, "ProteinGenerator/inference.py")
@@ -40,19 +47,27 @@ print(f"[CONFIG] ProteinGenerator Directory: {PG_DIR}")
 print(f"[CONFIG] ProteinGenerator Environment: {PG_ENV}")
 print(f"[CONFIG] ProteinGenerator Inference Script: {PG_INFERENCE}")
 
-# RoseTTAFold-All-Atom
+## RoseTTAFold-All-Atom
 RF_DIR = os.path.join(TOOLS_DIR, "RoseTTAFold-All-Atom")
 RF_ENV = "RFAA"
 RF_SCRIPT = "rf2aa/run_inference.py"
+SIGNALP_ENV = "signalp6"
 print(f"[CONFIG] RoseTTAFold-All-Atom Directory: {RF_DIR}")
 print(f"[CONFIG] RoseTTAFold-All-Atom Environment: {RF_ENV}")
 print(f"[CONFIG] RoseTTAFold-All-Atom Script: {RF_SCRIPT}")
 
-# DiffDock
+## DiffDock
 DD_DIR = os.path.join(TOOLS_DIR, "DiffDock")
 DD_ENV = "diffdock"
 print(f"[CONFIG] DiffDock Directory: {DD_DIR}")
 print(f"[CONFIG] DiffDock Environment: {DD_ENV}")
+
+## Vina
+VINA_DIR = os.path.join(TOOLS_DIR, "vina")
+VINA_BIN = os.path.join(VINA_DIR, "vina")
+VINA_ENV = "vina"
+print(f"[CONFIG] Vina Directory: {VINA_DIR}")
+print(f"[CONFIG] Vina Environment: {VINA_ENV}")
 
 # Pipeline Settings
 ## ProteinGenerator
