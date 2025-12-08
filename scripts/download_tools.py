@@ -72,7 +72,7 @@ def rfaa_dependencies():
     Loads all RFAA dependencies.
     """
     # Running setup scripts according to RFAA documentation.
-    run(f"conda run {cfg.RF_DIR}/rf2aa/SE3Transformer/ pip3 install --no-cache-dir -r requirements.txt")
+    run(f"conda run pip3 install --no-cache-dir -r {cfg.RF_DIR}/rf2aa/SE3Transformer/requirements.txt")
     run(f"python3 {cfg.RF_DIR}/rf2aa/setup.py install")
 
     # Prompting user to download signalp6.

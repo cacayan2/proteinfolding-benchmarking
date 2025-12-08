@@ -19,3 +19,4 @@ results/vina/*
 !results/vina/.gitkeep
 __pycache__
 tools/*
+!tools/.gitkeep
