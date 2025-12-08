@@ -6,14 +6,15 @@ from pathlib import Path
 import benchmark_config as cfg
 
 # Tools and their corresponding .yml files.
-ENV_DIR = cfg.PROJECT_ROOT / "envs"
+ENV_DIR = Path(cfg.PROJECT_ROOT) / "envs"
 ENV_FILES = {
-    cfg.PG_ENV: ENV_DIR / "run_proteingenerator.yml",
-    cfg.RF_ENV: ENV_DIR / "run_rosettafold.yml",
-    cfg.DD_ENV: ENV_DIR / "run_diffdock.yml",
-    cfg.VINA_ENV: ENV_DIR / "run_vina.yml",
-    cfg.DATA_ENV: ENV_DIR / "download_dataset.yml",
-    cfg.SIGNALP_ENV: ENV_DIR / "signalp.yml"
+    cfg.PG_ENV: Path(ENV_DIR) / "run_proteingenerator.yml",
+    cfg.RF_ENV: Path(ENV_DIR) / "run_rosettafold.yml",
+    cfg.DD_ENV: Path(ENV_DIR) / "run_diffdock.yml",
+    cfg.VINA_ENV: Path(ENV_DIR) / "run_vina.yml",
+    cfg.DATA_ENV: Path(ENV_DIR) / "download_dataset.yml",
+    cfg.SIGNALP_ENV: Path(ENV_DIR) / "signalp.yml",
+    cfg.TOOLS_ENV: Path(ENV_DIR) / "download_tools.yml"
 }
 
 # Helper function to run shell comands.
@@ -42,7 +43,11 @@ def recreate_env(env_name, yaml_path):
 
     # Remove old environment if exists.
     print(f"[ENV] Removing old environment: {env_name}")
-    run(f"conda env remove -n {env_name} --yes")
+    try:
+        run(f"conda env remove -n {env_name} --yes")
+    except:
+        print(f"[ENV] Environment {env_name} does not exist, creating now...")
+        pass
 
     # Create new environment.
     if yaml_path.exists():

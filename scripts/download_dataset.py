@@ -4,7 +4,6 @@
 import os
 import sys
 import subprocess
-
 import benchmark_config as cfg
 
 # Checking appropriate environment used.
@@ -42,7 +41,7 @@ def fetch_pdb(pdb_id, out_path):
     :param pdb_id: The PDB ID to download
     :param out_path: The path to save the PDB file to
     """
-    url = f"https://files.rcsb.org/download{pdb_id}.pdb"
+    url = f"https://files.rcsb.org/download/{pdb_id}.pdb"
     print(f"[DOWNLOAD] Fetching {pdb_id} from {url}")
     r = requests.get(url, timeout = 30)
     if r.status_code != 200: # Check if the request was successful for debugging.
@@ -183,7 +182,7 @@ def preprocess_pdb(raw_pdb, clean_protein_out, ligand_out, metadata_out, fasta_o
         Chem.SanitizeMol(largest) # Sanitize the ligand
     # Write the SDF for DiffDock
         print(f"[LIGAND] Writing {ligand_sdf}")
-        Chem.MoltoMolFile(largest, ligand_sdf) # Write the ligand SDF
+        Chem.MolToMolFile(largest, ligand_sdf) # Write the ligand SDF
     # Convert the ligand using meeko
         mp = MoleculePreparation() # Initialize the MoleculePreparation class
         setup_list = mp.prepare(largest) # Prepare the ligand, returns MoleculeSetup
@@ -286,10 +285,10 @@ def main():
         print(f"[DOWNLOAD] Processing {pdb_id}...")
         if not os.path.exists(raw_path):
             fetch_pdb(pdb_id, raw_path)
+            meta = preprocess_pdb(raw_path, clean_path, ligand_path, meta_path, fasta_path)
+            print(f"[PREPROCESS] Finished processing {pdb_id}!")
         else:
             print(f"[DOWNLOAD] Skipping {pdb_id}, directory already exists...")
-        meta = preprocess_pdb(raw_path, clean_path, ligand_path, meta_path, fasta_path)
-        print(f"[PREPROCESS] Finished processing {pdb_id}!")
     print(f"[DOWNLOAD] Finished downloading datasets!")
 
 if __name__ == "__main__":

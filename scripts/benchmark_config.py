@@ -11,12 +11,11 @@ print(f"[CONFIG] Project Root: {PROJECT_ROOT}")
 
 # Data Directories
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
-PDB_LIST = ["1HVR", "1OHR", "3QS1", "2R5P", "1STP",
-            "2VTA", "1BTH", "1PPH",
-            "3HTB", "1CA3", "4M0C",
-            "1A30", "2HYY", "3E92",
-            "1B9V", "1FPU", "1CKA", "1SSH",
-            "2BR1", "3L3P", "1DHF"]
+PDB_LIST = ["1HVR", "1OHR", "2VTA", "3L4R", "1STP",
+            "1ERR", "3ERD", "3RLJ", "4MBS", "2AXO",
+            "3PBL", "4IB4", "4MQS",
+            "1BMA", "1M17", "2P16", "2BHX", "3LBW",
+            "1HRC", "3RMU"]
 DATA_ENV = "download_dataset"
 print(f"[CONFIG] Data Directory: {DATA_DIR}")
 
@@ -37,6 +36,7 @@ print(f"[CONFIG] Plots Directory: {PLOTS_DIR}")
 
 # Tools Directories
 TOOLS_DIR = os.path.join(PROJECT_ROOT, "tools")
+TOOLS_ENV = "download_tools"
 print(f"[CONFIG] Tools Directory: {TOOLS_DIR}")
 
 ## ProteinGenerator

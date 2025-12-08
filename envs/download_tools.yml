@@ -1,0 +1,12 @@
+name: datasetprep
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pathlib
+  - time
+  - yaml
+  - pip
+  - pip:
+    - pyyaml

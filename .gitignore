@@ -1,0 +1,12 @@
+scripts/diffdock_weights.py
+data/*
+plots/*
+results/diffdock/*
+results/gpu_traces/*
+results/io_traces/*
+results/memory_traces/*
+results/proteingenerator/*
+results/rosettafold/*
+results/vina/*
+__pycache__
+tools/*

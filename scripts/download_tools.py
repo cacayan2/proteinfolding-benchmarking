@@ -1,10 +1,21 @@
 import os
-import subprocess
 import sys
+import subprocess
+import benchmark_config as cfg
+
+# Checking appropriate environment used.
+REQUIRED_ENV = cfg.TOOLS_ENV
+current_env = os.environ.get("CONDA_DEFAULT_ENV")
+if current_env != REQUIRED_ENV:
+    print(f"[DOWNLOAD] Relaunching download_dataset.py in {REQUIRED_ENV} environment.")
+    cmd = ["conda", "run", "-n", REQUIRED_ENV, "python"] + sys.argv
+    subprocess.run(cmd)
+    sys.exit()
+
+
 from pathlib import Path
 import time
-
-import benchmark_config as cfg
+import yaml
 
 # Helper function to run shell comands.
 def run(cmd):
@@ -19,65 +30,42 @@ def run(cmd):
         print(f"[ERROR] Command failed: {cmd}")
         sys.exit(1)
 
-def conda_env_exists(env):
+def rfaa_databases():
     """
-    Check if a conda environment exists
+    Configures downloaded RFAA databases. 
+    """
+    ur30 = os.path.join(cfg.RF_DIR, "UniRef30_2020_06")
+    bfd = os.path.join(cfg.RF_DIR, "bfd")
+    blastmat = os.path.join(cfg.RF_DIR, "blast-2.2.26")
+    pdb100 = os.path.join(cfg.RF_DIR, "pdb100_2021Mar03")
     
-    :param env: The environment to check
-    """
-    result = subprocess.run(
-        f"conda env list | grep '^{env}", # Check if the environment exists
-        shell=True, # Run in shell
-        stdout=subprocess.PIPE, # Capture stdout
-        stderr=subprocess.PIPE, # Capture stderr
-    )
-    return result.returncode == 0
+    for p in [ur30, bfd, blastmat, pdb100]:
+        if not p.exists():
+            print(f"[WARNING] Expected DB directory missing: {p}")
 
-# ProteinGenerator Installation
-def install_proteingenerator():
-    """
-    Installs ProteinGenerator
-    """
-    # Clone tool from GitHub
-    print(f"[TOOLS] Installing ProteinGenerator")
-    print(f"[TOOLS] Downloading ProteinGenerator from GitHub")
-    if os.path.exists(cfg.PG_DIR):
-        print("[TOOLS] ProteinGenerator already installed, skipping.")
-    else:
-        run(f"git clone https://github.com/RosettaCommons/protein_generator {cfg.PG_DIR}")
-        print(f"[TOOLS] ProteinGenerator downloaded successfully.")
-    
-    print(f"[TOOLS] Downloading model checkpoints")
-    
-    # Download model checkpoints
-    model_dir = os.path.join(cfg.PG_DIR, "model")
-    os.makedirs(model_dir, exist_ok = True)
-    ckpts = [
-        "http://files.ipd.uw.edu/pub/sequence_diffusion/checkpoints/SEQDIFF_221219_equalTASKS_nostrSELFCOND_mod30.pt",
-        "http://files.ipd.uw.edu/pub/sequence_diffusion/checkpoints/SEQDIFF_230205_dssp_hotspots_25mask_EQtasks_mod30.pt",
-    ]
-    
-    for url in ckpts:
-        file = os.path.join(model_dir, url.split("/")[-1])
-        if not os.path.exists(file):
-            run(f"wget {url} -O {file}")
-        else:
-            print(f"[TOOLS] Checkpoint already exists: {file}")
+        # Export environment variables permanently with modification to bashrc - recommended by documentation.
+        bashrc = Path.home() / ".bashrc"
 
-    print(f"[TOOLS] ProteinGenerator fully installed.")
+        def append_export(name, value):
+            """
+            Appends export line to bashrc
 
-def install_rfaa():
-    """
-    Installs RoseTTAFold-All-Atom
-    """
-    print(f"[TOOLS] Installing RoseTTAFold-All-Atom")
-    if os.path.exists(cfg.RF_DIR):
-        print("[TOOLS] RoseTTAFold-All-Atom already installed, skipping.")
-    else:
-        run(f"git clone https://github.com/baker-laboratory/RoseTTAFold-All-Atom.git {cfg.RF_DIR}")
-        print(f"[TOOLS] RoseTTAFold-All-Atom downloaded successfully.")
-    rfaa_dependencies()
-    print(f"[TOOLS] RoseTTAFold-All-Atom fully installed.")
+            :param name: name of environment variable
+            :param value: value of environment variable
+            """
+            line = f"export {name}=\"{value}\"" # line to append
+            existing = bashrc.read_text() if bashrc.exists() else "" # existing content
+
+            if line not in existing: # if not already in bashrc
+                with open(bashrc, "a") as f: # append to bashrc
+                    f.write("\n" + line + "\n")
+                print("[TOOLS] Appended export line to bashrc.")
+            else:
+                print("[TOOLS] bashrc already contains {name}")
+        append_export("DB_UR30", str(ur30)) # Append export line for ur30
+        append_export("DB_BFD", str(bfd)) # Append export line for bfd
+        append_export("DB_PDB", str(blastmat)) # Append export line for blast
+        append_export("DB_BLASTMAT", str(pdb100)) # Append export line for pdb100
 
 def rfaa_dependencies():
     """
@@ -190,5 +178,146 @@ def rfaa_dependencies():
         run(f"rm {cfg.RF_DIR}/blast-2.2.26-x64-linux.tar.gz")
     else:
         print("[TOOLS] BLAST already downloaded.")
+    
+    # Configuring Databases
+    print(f"[TOOLS] Configuring databases...")
+    rfaa_databases()
 
-    print("[TOOLS] Installation complete.")
+# ProteinGenerator Installation
+def install_proteingenerator():
+    """
+    Installs ProteinGenerator
+    """
+    # Clone tool from GitHub
+    print(f"[TOOLS] Installing ProteinGenerator")
+    print(f"[TOOLS] Downloading ProteinGenerator from GitHub")
+    if os.path.exists(cfg.PG_DIR):
+        print("[TOOLS] ProteinGenerator already installed, skipping.")
+    else:
+        run(f"git clone https://github.com/RosettaCommons/protein_generator {cfg.PG_DIR}")
+        print(f"[TOOLS] ProteinGenerator downloaded successfully.")
+    
+    print(f"[TOOLS] Downloading model checkpoints")
+    
+    # Download model checkpoints
+    model_dir = os.path.join(cfg.PG_DIR, "model")
+    os.makedirs(model_dir, exist_ok = True)
+    ckpts = [
+        "http://files.ipd.uw.edu/pub/sequence_diffusion/checkpoints/SEQDIFF_221219_equalTASKS_nostrSELFCOND_mod30.pt",
+        "http://files.ipd.uw.edu/pub/sequence_diffusion/checkpoints/SEQDIFF_230205_dssp_hotspots_25mask_EQtasks_mod30.pt",
+    ]
+    
+    for url in ckpts:
+        file = os.path.join(model_dir, url.split("/")[-1])
+        if not os.path.exists(file):
+            run(f"wget {url} -O {file}")
+        else:
+            print(f"[TOOLS] Checkpoint already exists: {file}")
+
+    print(f"[TOOLS] ProteinGenerator fully installed.")
+
+def install_rfaa():
+    """
+    Installs RoseTTAFold-All-Atom
+    """
+    print(f"[TOOLS] Installing RoseTTAFold-All-Atom")
+    if os.path.exists(cfg.RF_DIR):
+        print("[TOOLS] RoseTTAFold-All-Atom already installed, skipping.")
+    else:
+        run(f"git clone https://github.com/baker-laboratory/RoseTTAFold-All-Atom.git {cfg.RF_DIR}")
+        print(f"[TOOLS] RoseTTAFold-All-Atom downloaded successfully.")
+    rfaa_dependencies()
+    print(f"[TOOLS] RoseTTAFold-All-Atom fully installed.")
+
+def prepare_diffdock_weights():
+    """
+    Unzips DiffDock weights
+    """
+    # This is a file that only the author of this pipeline has - it automatically downloads the correct zip file.
+    if os.path.exists(cfg.PROJECT_ROOT / "scripts" / "diffdock_weights.py"):
+        run(f"run python {cfg.PROJECT_ROOT}/scripts/diffdock_weights.py", shell = True)
+    # Unzips weights.
+    MODEL_DIR = os.path.join(cfg.DD_DIR, "models")
+    ZIP_DIR = os.path.join(cfg.DD_DIR, "diffdock_weights.zip")
+    run(f"unzip {ZIP_DIR} 'diffdock-main/workdir/'-d {cfg.DD_DIR}/tmp_dd", shell = True)
+    run(f"mv {cfg.DD_DIR}/tmp_dd/diffdock-main/workdir/* {MODEL_DIR}/", shell = True)
+    run("rm -rf tmp_dd diffdock_weights.zip", shell = True)
+
+def has_diffdock_weights():
+    """
+    Checks if DiffDock weights are installed.
+    """
+    MODEL_DIR = os.path.join(cfg.DD_DIR, "models")
+    REQUIRED_FILES = ["diffdock_model.pt",
+                    "score_model.pt",
+                    "noise_scheduler.pt",
+                    "inference_args.json"]
+    os.makedirs(MODEL_DIR, exist_ok = True)
+    all_exist = all(os.path.exists(os.path.join(MODEL_DIR, f)) for f in REQUIRED_FILES)
+    return all_exist
+    
+def install_diffdock():
+    """
+    Installs DiffDock
+    """
+    print(f"[TOOLS] Installing DiffDock")
+    print(f"[TOOLS] Downloading DiffDock from GitHub")
+    if os.path.exists(cfg.DD_DIR):
+        if os.path.exists(cfg.DD_DIR):
+            print("[TOOLS] DiffDock already installed, skipping.")
+        else:
+            run(f"git clone https://github.com/gcorso/DiffDock.git {cfg.DD_DIR}")
+            print(f"[TOOLS] DiffDock downloaded successfully.")
+        if has_diffdock_weights():
+            print("[TOOLS] DiffDock weights already installed, skipping.")
+        else:
+            print(f"[TOOLS] The next step is to obtain the model weights.")
+            print(f"[TOOLS] However, due to copyright infringement issues, the model weights are not publicly available.")
+            print(f"[TOOLS] This pipeline was successfully run despite this, because there may or may not be another copy... somewhere...")
+            print(f"[TOOLS] Please download the .zip file and put it in the root of DiffDock.")
+            print(f"[TOOLS] Alternatively, reach out to Emil Cacayan for help - he has a script that automatically does this.")
+            print(f"[TOOLS] Name it diffdock_weights.zip.")
+            print(f"[TOOLS] Recommend saving the zip to another place, as this tool will delete it upon unpacking.")
+            input(f"[TOOLS] Press ENTER to continue.")
+            try: 
+                prepare_diffdock_weights()
+            except:
+                print("[TOOLS] Please download the .zip file and put it in the root of DiffDock.")
+                print("[TOOLS] Alternatively, reach out to Emil Cacayan for help - he has a script that automatically does this.")
+                print("[TOOLS] Name it diffdock_weights.zip.")
+                sys.exit(1)
+    print(f"[TOOLS] DiffDock fully installed.")
+
+def install_vina():
+    """
+    Installs Vina
+    """
+    if os.path.exists(cfg.VINA_BIN):
+        print("[TOOLS] Vina already installed, skipping.")
+        return
+    os.makedirs(cfg.VINA_DIR, exist_ok = True)
+    url = "https://github.com/ccsb-scripps/AutoDock-Vina/releases/download/v1.2.7/vina_1.2.7_linux_x86_64"
+    out = os.path.join(cfg.VINA_DIR, "vina")
+    run(f"wget {url} -O {out}")
+    run(f"chmod +x {out}")
+    print(f"[TOOLS] AutoDock Vina downloaded successfully.")
+    
+def main():
+    """
+    Main function
+    """
+    print("[TOOLS] Downloading tools...")
+    install_proteingenerator()
+    install_rfaa()
+    install_diffdock()
+    install_vina()
+    print("[TOOLS] Tools downloaded successfully.")
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+            
