@@ -1,5 +1,6 @@
 scripts/diffdock_weights.py
 data/*
+data/!.gitkeep
 plots/*
 results/diffdock/*
 results/gpu_traces/*
