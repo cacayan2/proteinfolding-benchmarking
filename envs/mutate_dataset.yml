@@ -1,0 +1,17 @@
+name: datasetprep
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - rdkit
+  - openbabel
+  - pdbfixer
+  - biopython
+  - numpy
+  - pandas
+  - requests
+  - pip
+  - gemmi
+  - pip:
+    - meeko

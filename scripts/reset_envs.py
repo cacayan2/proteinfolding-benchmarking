@@ -14,7 +14,8 @@ ENV_FILES = {
     cfg.VINA_ENV: Path(ENV_DIR) / "run_vina.yml",
     cfg.DATA_ENV: Path(ENV_DIR) / "download_dataset.yml",
     cfg.SIGNALP_ENV: Path(ENV_DIR) / "signalp.yml",
-    cfg.TOOLS_ENV: Path(ENV_DIR) / "download_tools.yml"
+    cfg.TOOLS_ENV: Path(ENV_DIR) / "download_tools.yml",
+    cfg.MUTATE_ENV: Path(ENV_DIR) / "mutate_dataset.yml"
 }
 
 # Helper function to run shell comands.

@@ -20,3 +20,4 @@ results/vina/*
 __pycache__
 tools/*
 !tools/.gitkeep
+scripts/se3_transformer.egg-info

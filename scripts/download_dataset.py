@@ -1,20 +1,8 @@
-
-
 # A dataset downloading and preprocessing pipeline for the benchmarking project.
 import os
 import sys
 import subprocess
 import benchmark_config as cfg
-
-# Checking appropriate environment used.
-REQUIRED_ENV = cfg.DATA_ENV
-current_env = os.environ.get("CONDA_DEFAULT_ENV")
-if current_env != REQUIRED_ENV:
-    print(f"[DOWNLOAD] Relaunching download_dataset.py in {REQUIRED_ENV} environment.")
-    cmd = ["conda", "run", "-n", REQUIRED_ENV, "python"] + sys.argv
-    subprocess.run(cmd)
-    sys.exit()
-
 import json
 import requests
 import warnings
@@ -259,6 +247,7 @@ def preprocess_pdb(raw_pdb, clean_protein_out, ligand_out, metadata_out, fasta_o
         ligand_found = ligand_found, # Ligand found
         ligand_file = ligand_out if ligand_found else None, # Ligand file
         ligand_sdf = ligand_sdf if ligand_found else None, # Ligand SDF file
+        ligand_pdbqt = ligand_pdbqt if ligand_found else None, # Ligand PDBQT file
         receptor_pdbqt = receptor_pdbqt, # Receptor PDBQT file
         fasta_file = fasta_out, # FASTA file
         raw_pdb = raw_pdb, # Raw PDB file

@@ -11,11 +11,7 @@ print(f"[CONFIG] Project Root: {PROJECT_ROOT}")
 
 # Data Directories
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
-PDB_LIST = ["1HVR", "1OHR", "2VTA", "3L4R", "1STP",
-            "1ERR", "3ERD", "3RLJ", "4MBS", "2AXO",
-            "3PBL", "4IB4", "4MQS",
-            "1BMA", "1M17", "2P16", "2BHX", "3LBW",
-            "1HRC", "3RMU"]
+PDB_LIST = ["1HVR", "1STP", "1OHR", "2VTA", "1BMA"]
 DATA_ENV = "download_dataset"
 print(f"[CONFIG] Data Directory: {DATA_DIR}")
 
@@ -37,6 +33,7 @@ print(f"[CONFIG] Plots Directory: {PLOTS_DIR}")
 # Tools Directories
 TOOLS_DIR = os.path.join(PROJECT_ROOT, "tools")
 TOOLS_ENV = "download_tools"
+MUTATE_ENV = "mutate_dataset"
 print(f"[CONFIG] Tools Directory: {TOOLS_DIR}")
 
 ## ProteinGenerator
@@ -50,7 +47,7 @@ print(f"[CONFIG] ProteinGenerator Inference Script: {PG_INFERENCE}")
 ## RoseTTAFold-All-Atom
 RF_DIR = os.path.join(TOOLS_DIR, "RoseTTAFold-All-Atom")
 RF_ENV = "RFAA"
-RF_SCRIPT = "rf2aa/run_inference.py"
+RF_SCRIPT = os.path.join(RF_DIR, "rf2aa/run_inference.py")
 SIGNALP_ENV = "signalp6"
 print(f"[CONFIG] RoseTTAFold-All-Atom Directory: {RF_DIR}")
 print(f"[CONFIG] RoseTTAFold-All-Atom Environment: {RF_ENV}")
