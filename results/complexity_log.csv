@@ -1,0 +1,12 @@
+tool,pdb_id,time_sec,mem_mb
+ProteinGenerator,1BMA,281.82,1743.43
+ProteinGenerator,1HVR,235.48,1749.85
+ProteinGenerator,1OHR,137.09,1743.30
+ProteinGenerator,2P16,249.42,1745.46
+ProteinGenerator,3RMU,249.11,1744.89
+RFAA,1BMA,5048.47,0.00
+RFAA,1HVR,3880.05,0.00
+RFAA,1OHR,3659.78,0.00
+RFAA,2P16,4173.91,0.00
+RFAA,3RMU,6183.64,0.00
+vina_native,1HVR,86.84,11.38

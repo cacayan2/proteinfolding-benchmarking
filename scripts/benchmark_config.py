@@ -11,7 +11,7 @@ print(f"[CONFIG] Project Root: {PROJECT_ROOT}")
 
 # Data Directories
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
-PDB_LIST = ["1HVR", "1STP", "1OHR", "2VTA", "1BMA"]
+PDB_LIST = ["1HVR", "3RMU", "1OHR", "2P16", "1BMA"]
 DATA_ENV = "download_dataset"
 print(f"[CONFIG] Data Directory: {DATA_DIR}")
 
